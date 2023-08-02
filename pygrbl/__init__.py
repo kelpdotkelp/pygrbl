@@ -8,3 +8,4 @@ from .core import PyGRBLMachine, create_pygrbl_machine, set_chamber
 from .geometry import PyGRBLChamber, ChamberCircle2D
 from .point import Point
 from .csv import load_csv
+from .exception import *
