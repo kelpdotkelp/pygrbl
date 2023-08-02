@@ -1,6 +1,6 @@
 from setuptools import setup
 
-with open('/README.md', 'r') as file:
+with open('./README.md', 'r') as file:
     long_description = file.read()
 
 setup(
@@ -10,5 +10,5 @@ setup(
     packages=['pygrbl'],
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='',
+    url='https://github.com/kelpdotkelp/pygrbl',
     author='kelpdotkelp')
