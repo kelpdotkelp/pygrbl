@@ -5,7 +5,7 @@ with open('./README.md', 'r') as file:
 
 setup(
     name='pygrbl',
-    version='1.0.0',
+    version='1.0.1',
     description='A simple interface for controlling cartesian robots with GRBL.',
     packages=['pygrbl'],
     long_description=long_description,
