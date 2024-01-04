@@ -34,13 +34,13 @@ class PyGRBLMachine:
 
     def set_origin(self) -> None:
         """Sets the origin at the machine's current position"""
+        self.origin_set = True
         try:
             self._send_command('G90')  # Absolute positioning
             self._send_command('G92 X0 Y0 Z0')  # Set origin point
             self._send_command('G21')  # All units in mm
         except CommandException:
             raise
-        self.origin_set = True
 
     def set_position(self, pos_new: Point) -> None:
         """Attempts to move to a new position. Delays are put in place to ensure
@@ -63,12 +63,26 @@ class PyGRBLMachine:
                 for string in out:
                     if string[0] == '<':
                         end = string.find('|')
+                        # For compatibility with grbl v8.0
+                        if end == -1:
+                            end = string.find(',')
 
                         # Check while moving that machine is in bounds
                         if string[1:end] == 'Run':
-                            query_x = string[string.find(':') + 1: string.find(',')]
-                            query_y = string[string.find(',') + 1: string.find(',', string.find(',') + 1)]
-                            moving_pos = Point(float(query_x), float(query_y))
+                            comma_index = string.find(',', end+1)
+                            query_x = string[string.find(':') + 1: comma_index]
+
+                            next_comma_index = string.find(',', comma_index+1)
+                            query_y = string[comma_index+1: next_comma_index]
+
+                            if pos_new.z != 0:
+                                comma_index = next_comma_index
+                                next_comma_index = string.find(',', comma_index+1)
+                                query_z = string[comma_index+1: next_comma_index]
+                                moving_pos = Point(float(query_x), float(query_y), float(query_z))
+                            else:
+                                moving_pos = Point(float(query_x), float(query_y))
+
                             if not _chamber.is_point_valid(moving_pos):
                                 self._send_command('!')  # Feed stop
                                 raise PointOutOfBoundsException

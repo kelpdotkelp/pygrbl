@@ -20,6 +20,32 @@ class PyGRBLChamber:
         pass
 
 
+class ChamberCylinder3D(PyGRBLChamber):
+
+    def __init__(self, radius: float, height: float, padding: float,
+                 target_radius: float, target_height: float):
+        self.radius: float = radius
+        self.height: float = height
+        self.padding: float = padding
+
+        self.target_radius: float = target_radius
+        self.target_height: float = target_height
+
+    @property
+    def true_radius(self) -> float:
+        return self.radius - self.padding - self.target_radius
+
+    @property
+    def true_height(self) -> float:
+        return self.height - self.padding - self.target_height / 2
+
+    def is_point_valid(self, point: Point) -> bool:
+        if sqrt(pow(point.x, 2) + pow(point.y, 2)) < self.true_radius and abs(point.z) < self.true_height:
+            return True
+        else:
+            return False
+
+
 class ChamberCircle2D(PyGRBLChamber):
 
     def __init__(self, radius: float, padding: float, target_radius: float):
