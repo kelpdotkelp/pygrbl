@@ -43,7 +43,7 @@ Base class for all chamber geometries.
 `is_point_valid(point: Point)`
 
 Implemented by subclasses, returns a boolean indicating whether
-`point` is valid to move to based on the subclass chamber geomtery and
+`point` is valid to move to based on the subclass chamber geometry and
 target geometry.
 
 ### `ChamberCircle2D(PyGRBLChamber)`
@@ -80,6 +80,44 @@ radius -> radius of circle to generate them in.
 order -> 'none' or 'nearest_neighbour' how to order the points once generated.
 
 Returns a list of uniformly distributed points with the specified radius.
+
+### `ChamberCylinder3D(PyGRBLChamber)`
+
+Specifies a chamber geometry of a cylinder in the XYZ plane, with
+a cylindrical target. The origin is taken at the center of the cylinder,
+on the top face.
+
+`ChamberCylinder3D.__init__(self, radius: float, height: float, padding: float,
+target_radius: float, target_height: float)`
+
+radius -> Radius of the chamber.
+
+height -> Height of the chamber.
+
+padding -> Extra distance away from the chamber edges that the target can not enter.
+
+target_radius -> Radius of the target.
+
+target_height -> Height of the target.
+
+For a spherical target, target_radius would be the sphere's radius, target_height
+would be the sphere's diameter.
+
+`@property ChamberCylinder3D.true_radius`
+
+Circle which XY points can actually be in, calculated as:
+
+self.radius - self.padding - self.target_radius
+
+`@property ChamberCylinder3D.true_height`
+
+Boundary in the Z direction for points, calculated as:
+
+self.height - self.padding - self.target_height/2
+
+`ChamberCircle2D.is_point_valid(point: Point)`
+
+See superclass definition.
 
 ### `Point`
 
